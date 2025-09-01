@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import re
@@ -107,10 +106,20 @@ def answer_query(q):
             n = extract_top_n(q_lower)
             avg = dist_df.groupby(["State","District"])["SolarGIS GHI"].mean().reset_index()
 
+            # If "each state" mentioned → get top N per state
+            if "each state" in q_lower or "every state" in q_lower:
+                results = []
+                for state in avg['State'].unique():
+                    topn = avg[avg['State']==state].nlargest(n,"SolarGIS GHI")
+                    results.append(topn)
+                return pd.concat(results).reset_index(drop=True)
+
+            # If a state is mentioned
             for state in dist_df['State'].unique():
                 if state.lower() in q_lower:
                     return avg[avg['State'].str.lower()==state.lower()].nlargest(n,"SolarGIS GHI").reset_index(drop=True)
 
+            # Otherwise overall
             return avg.nlargest(n,"SolarGIS GHI").reset_index(drop=True)
 
         # Average GHI/Albedo
