@@ -9,7 +9,7 @@ st.set_page_config(page_title="☀️ Solar Radiation Assistant", layout="wide")
 st.title("☀️ Solar Radiation Assistant")
 
 # --- Load Excel ---
-EXCEL_FILE = "/content/CombinedData.xlsx"
+EXCEL_FILE = "CombinedData.xlsx"
 df = pd.read_excel(EXCEL_FILE)
 
 # --- Normalize ---
